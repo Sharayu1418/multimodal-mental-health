@@ -23,7 +23,7 @@ This project bridges that gap by using **multi-source data fusion** to provide h
 | **FER-2013 (Facial Expression Recognition)** | Emotion detection from facial images                  | Kaggle                                                   |
 
 
-### 🧩 Model Architecture
+###  Model Architecture
 
 ```
                  ┌────────────────────┐
@@ -57,7 +57,7 @@ Outputs are fused in a fully connected layer to provide a comprehensive depressi
 ---
 
 
-### 📈 Example Output
+###  Example Output
 
 ```
 Facial Emotion: Fear (0.99)
@@ -66,7 +66,7 @@ PHQ-9 Score: 12 → Mild Depression
 Overall Assessment: Moderate Risk
 ```
 
-### 💡 Future Enhancements
+###  Future Enhancements
 
 * Add **text sentiment + summarization** (using MentSum dataset).
 * Integrate **real-time wearable sensor data**.
