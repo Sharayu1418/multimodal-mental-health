@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Assessment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  answers   Int[]    // Stores the answers (0-3) for each question
+  totalScore Int     // Total PHQ-9 score
+  severity  String   // Depression severity level
+}

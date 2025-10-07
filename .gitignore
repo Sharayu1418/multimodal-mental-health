@@ -1,0 +1,91 @@
+# ========================
+# General
+# ========================
+.DS_Store
+Thumbs.db
+*.log
+*.env
+.env.*
+*.zip
+*.tar
+*.gz
+*.rar
+README.md
+
+
+# ========================
+# Python
+# ========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.h5
+*.pt
+*.onnx
+*.sqlite3
+venv/
+env/
+.venv/
+*.egg-info/
+instance/
+.mypy_cache/
+.pytest_cache/
+*.db
+
+# ========================
+# Node / Frontend (Vite / React)
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+build/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# ========================
+# Tailwind / PostCSS / Vite cache
+# ========================
+.postcssrc
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+vite.config.mjs.timestamp-*
+.vite/
+*.lock
+
+# ========================
+# IDEs / Editors
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# ========================
+# System Files
+# ========================
+Desktop.ini
+$RECYCLE.BIN/
+
+# ========================
+# Model Files (if large, track elsewhere)
+# ========================
+/Integrated Model/*.pth
+/Integrated Model/*.pt
+/Integrated Model/*.h5
+/Integrated Model/*.onnx
+
+# ========================
+# Local Data or Datasets
+# ========================
+/data/
+/datasets/
+/__results__/
+/__experiments__/

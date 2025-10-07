@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Depression Detection</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #webcam-container,
+        #label-container,
+        #captured-image-container {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        #webcam-container video {
+            width: 100%;
+        }
+
+        #label-container div {
+            margin-bottom: 0.5rem;
+        }
+
+        #captured-image-container img {
+            width: 30%;
+            height: 50%;
+        }
+
+        #phq9-result {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #phq9-result h2 {
+            color: #4CAF50;
+        }
+
+        #phq9-result .alert {
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="site-wrap" id="home-section">
+
+        <!-- Teachable Machine Section -->
+        <div class="title">Image Analysis</div>
+        <div class="button-container">
+            <button type="button" onclick="init()">Start</button>
+            <button type="button" onclick="stop()">Stop</button>
+        </div>
+        <div id="webcam-container"></div>
+        <div id="label-container"></div>
+        <div id="captured-image-container"></div>
+
+        <!-- PHQ-9 Results Section -->
+        <div id="phq9-result">
+            <h2>PHQ-9 Depression Screening</h2>
+            <button onclick="displayStaticPHQ9Result()" class="btn btn-primary">Get PHQ-9 Results</button>
+            <div id="phq9-results-display" class="mt-4"></div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script>
+        // Teachable Machine Integration
+        const URL = "https://teachablemachine.withgoogle.com/models/Oc_4LwzLp/";
+
+        let model, webcam, labelContainer, maxPredictions;
+
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            const flip = true;
+            webcam = new tmImage.Webcam(200, 200, flip);
+            await webcam.setup();
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                labelContainer.appendChild(document.createElement("div"));
+            }
+        }
+
+        async function loop() {
+            webcam.update();
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+
+        async function predict() {
+            const prediction = await model.predict(webcam.canvas);
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                labelContainer.childNodes[i].innerHTML = classPrediction;
+            }
+        }
+
+        async function stop() {
+            webcam.stop();
+            const capturedImage = await webcam.canvas.toDataURL();
+            const capturedImageElement = document.createElement("img");
+            capturedImageElement.src = capturedImage;
+            document.getElementById("captured-image-container").innerHTML = "";
+            document.getElementById("captured-image-container").appendChild(capturedImageElement);
+        }
+
+        function displayStaticPHQ9Result() {
+            const totalScore = 13; // Hardcoded score
+            let severity = "Moderate"; // For example, a score of 13 is typically considered moderate
+
+            const resultsDisplay = document.getElementById('phq9-results-display');
+            resultsDisplay.innerHTML = `
+                <p><strong>Total Score:</strong> ${totalScore}</p>
+                <p><strong>Severity Level:</strong> ${severity}</p>
+                <div class="alert alert-warning">
+                    ${severity === 'Severe' 
+                        ? 'Immediate intervention with a mental health professional is recommended.' 
+                        : 'Consult with a healthcare professional for further advice.'}
+                </div>
+            `;
+        }
+    </script>
+
+</body>
+
+</html>
